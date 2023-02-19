@@ -1,6 +1,7 @@
 const Cheatsheet = require("../models/cheatsheet");
 const Tag = require("../models/tag");
 
+//Information
 exports.cheatsheet_list = function (req, res, next) {
   //Returns all cheatshets sorted by name
   Cheatsheet.find()
@@ -13,6 +14,15 @@ exports.cheatsheet_list = function (req, res, next) {
       res.json(list_cheatsheets);
     });
 };
+
+exports.cheatsheet_detail = function (req, res, next) {
+  Cheatsheet.findById(req.params.id, (err, results) => {
+    if (err) {
+      return next(err);
+    }
+    res.json(results);
+  })
+}
 
 //Create
 
@@ -54,7 +64,7 @@ exports.cheatsheet_delete_get = function (req, res, next) {
   });
 };
 
-exports.cheatsheet_delete_get = function (req, res, next) {
+exports.cheatsheet_delete_post = function (req, res, next) {
   Cheatsheet.findByIdAndRemove(req.params.id, (err) => {
     if (err) {
       return next(err);

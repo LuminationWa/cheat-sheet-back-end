@@ -11,7 +11,10 @@ router.get('/', function(req, res, next) {
 
 /// Cheatsheet routes ///
 
-//Tags
+//Information 
+router.get("/cheatsheets", cheatsheet_controller.cheatsheet_list);
+router.get("/cheatsheet/:id", cheatsheet_controller.cheatsheet_detail);
+
 // Create
 router.post("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_get);
 router.post("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_post);
@@ -24,32 +27,24 @@ router.post("/cheatsheet/:id/delete", cheatsheet_controller.cheatsheet_delete_po
 router.get("/cheatsheet/:id/update", cheatsheet_controller.cheatsheet_update_get);
 router.post("/cheatsheet/:id/update", cheatsheet_controller.cheatsheet_update_post);
 
-// //Individual cheatsheet
-// router.get("/cheatsheet/:id", cheatsheet_controller.cheatsheet_detail);
 
-//Cheatsheet list
-router.get("/cheatsheets", cheatsheet_controller.cheatsheet_list);
+/// Tag routes ///
 
+//Info
+router.get("/tags", tag_controller.tag_list);
+router.get("/tag/:id", tag_controller.tag_detail);
 
-// /// Tag routes ///
+//Create
+//No need for get
+router.post("/tag/create", tag_controller.tag_create_post);
 
-// // Create
-// router.get("/tag/create", tag_controller.tag_create_get);
-// router.post("/tag/create", tag_controller.tag_create_post);
+//Delete
+router.get("/tag/:id/delete", tag_controller.tag_delete_get);
+router.post("/tag/:id/delete", tag_controller.tag_delete_post);
 
-// //Delete
-// router.get("/tag/:id/delete", tag_controller.tag_delete_get);
-// router.post("/tag/:id/delete", tag_controller.tag_delete_post);
-
-// //Update
-// router.get("/tag/:id/update", tag_controller.tag_update_get);
-// router.post("/tag/:id/update", tag_controller.tag_update_post);
-
-// //Individual tag
-// router.get("/tag/:id", tag_controller.tag_detail);
-
-// //Tag list
-// router.get("/tags", tag_controller.tag_list);
+//Update
+router.get("/tag/:id/update", tag_controller.tag_update_get);
+router.post("/tag/:id/update", tag_controller.tag_update_post);
 
 
 // /// Subdivision routes ///
