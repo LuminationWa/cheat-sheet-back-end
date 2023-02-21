@@ -2,17 +2,26 @@ const Tag = require("../models/tag");
 
 //Info
 exports.tag_list = function (req, res, next) {
-    //Returns all tags sorted by name
-    Tag.find()
-      .sort([["name", "ascending"]])
-      .exec(function (err, tags) {
-        if (err) {
-          return next(err);
-        }
-        //Successful, so send response as JSON
-        res.json(list_tags);
-      });
-  };
+  //Returns all tags sorted by name
+  Tag.find()
+    .sort([["name", "ascending"]])
+    .exec(function (err, tags) {
+      if (err) {
+        return next(err);
+      }
+      //Successful, so send response as JSON
+      res.json(list_tags);
+    });
+};
+
+exports.tag_detail = function (req, res, next) {
+  Tag.findById(req.params.id, (err, results) => {
+    if (err) {
+      return next(err);
+    }
+    res.json(results);
+  });
+};
 
 //Create
 exports.tag_create_post = function (req, res, next) {
@@ -21,22 +30,13 @@ exports.tag_create_post = function (req, res, next) {
     name: req.body.name,
     description: req.body.description,
   });
-  cheatsheet.save((err) => {
+  tag.save((err) => {
     if (err) {
       return next(err);
     }
     res.redirect(tag.url);
   });
 };
-
-exports.tag_detail = function (req, res, next) {
-    Tag.findById(req.params.id, (err, results) => {
-      if (err) {
-        return next(err);
-      }
-      res.json(results);
-    })
-  }
 
 //Delete
 //Should check if there's cheatsheets assigned and if so not allow the post
@@ -77,16 +77,11 @@ exports.tag_update_post = function (req, res, next) {
     description: req.body.description,
     _id: req.params.id,
   });
-  Tag.findByIdAndUpdate(
-    req.params.id,
-    tag,
-    {},
-    (err, thetag) => {
-      if (err) {
-        return next(err);
-      }
-      //Successful, so redirect
-      res.redirect(tag.url);
+  Tag.findByIdAndUpdate(req.params.id, tag, {}, (err, thetag) => {
+    if (err) {
+      return next(err);
     }
-  );
+    //Successful, so redirect
+    res.redirect(tag.url);
+  });
 };

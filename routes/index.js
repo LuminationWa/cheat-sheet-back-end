@@ -47,24 +47,21 @@ router.get("/tag/:id/update", tag_controller.tag_update_get);
 router.post("/tag/:id/update", tag_controller.tag_update_post);
 
 
-// /// Subdivision routes ///
+/// Subdivision routes ///
 
-// // Create
-// router.get("/subdivision/create", subdivision_controller.subdivision_create_get);
-// router.post("/subdivision/create", subdivision_controller.subdivision_create_post);
+//Info
+router.get("/subdivisions", subdivision_controller.subdivision_list);
+router.get("/subdivision/:id", subdivision_controller.subdivision_detail);
 
-// //Delete
-// router.get("/subdivision/:id/delete", subdivision_controller.subdivision_delete_get);
-// router.post("/subdivision/:id/delete", subdivision_controller.subdivision_delete_post);
+// Create
+router.post("/subdivision/create", subdivision_controller.subdivision_create_post);
 
-// //Update
-// router.get("/subdivision/:id/update", subdivision_controller.subdivision_update_get);
-// router.post("/subdivision/:id/update", subdivision_controller.subdivision_update_post);
+//Delete
+router.get("/subdivision/:id/delete", subdivision_controller.subdivision_delete_get);
+router.post("/subdivision/:id/delete", subdivision_controller.subdivision_delete_post);
 
-// //Individual subdivision
-// router.get("/subdivision/:id", subdivision_controller.subdivision_detail);
-
-// //subdivision list
-// router.get("/subdivisions", subdivision_controller.subdivision_list);
+//Update
+router.get("/subdivision/:id/update", subdivision_controller.subdivision_update_get);
+router.post("/subdivision/:id/update", subdivision_controller.subdivision_update_post);
 
 module.exports = router;
