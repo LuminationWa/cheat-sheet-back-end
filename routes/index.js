@@ -1,17 +1,29 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 const cheatsheet_controller = require("../controllers/cheatsheetController");
 const subdivision_controller = require("../controllers/subdivisionController");
 const tag_controller = require("../controllers/tagController");
+const auth_controller = require("../controllers/authController");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get("/", function (req, res, next) {
+  res.render("index", { title: "Express" });
 });
+
+/// Auth routes ///
+
+//Sign up
+router.post("/sign-up", auth_controller.signup_post);
+
+//Log in
+router.post("/login", auth_controller.login_post);
+
+//Log out
+router.get("/log-out", auth_controller.logout_get);
 
 /// Cheatsheet routes ///
 
-//Information 
+//Information
 router.get("/cheatsheets", cheatsheet_controller.cheatsheet_list);
 router.get("/cheatsheet/:id", cheatsheet_controller.cheatsheet_detail);
 
@@ -20,13 +32,24 @@ router.post("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_get);
 router.post("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_post);
 
 //Delete
-router.get("/cheatsheet/:id/delete", cheatsheet_controller.cheatsheet_delete_get);
-router.post("/cheatsheet/:id/delete", cheatsheet_controller.cheatsheet_delete_post);
+router.get(
+  "/cheatsheet/:id/delete",
+  cheatsheet_controller.cheatsheet_delete_get
+);
+router.post(
+  "/cheatsheet/:id/delete",
+  cheatsheet_controller.cheatsheet_delete_post
+);
 
 //Update
-router.get("/cheatsheet/:id/update", cheatsheet_controller.cheatsheet_update_get);
-router.post("/cheatsheet/:id/update", cheatsheet_controller.cheatsheet_update_post);
-
+router.get(
+  "/cheatsheet/:id/update",
+  cheatsheet_controller.cheatsheet_update_get
+);
+router.post(
+  "/cheatsheet/:id/update",
+  cheatsheet_controller.cheatsheet_update_post
+);
 
 /// Tag routes ///
 
@@ -46,7 +69,6 @@ router.post("/tag/:id/delete", tag_controller.tag_delete_post);
 router.get("/tag/:id/update", tag_controller.tag_update_get);
 router.post("/tag/:id/update", tag_controller.tag_update_post);
 
-
 /// Subdivision routes ///
 
 //Info
@@ -54,14 +76,29 @@ router.get("/subdivisions", subdivision_controller.subdivision_list);
 router.get("/subdivision/:id", subdivision_controller.subdivision_detail);
 
 // Create
-router.post("/subdivision/create", subdivision_controller.subdivision_create_post);
+router.post(
+  "/subdivision/create",
+  subdivision_controller.subdivision_create_post
+);
 
 //Delete
-router.get("/subdivision/:id/delete", subdivision_controller.subdivision_delete_get);
-router.post("/subdivision/:id/delete", subdivision_controller.subdivision_delete_post);
+router.get(
+  "/subdivision/:id/delete",
+  subdivision_controller.subdivision_delete_get
+);
+router.post(
+  "/subdivision/:id/delete",
+  subdivision_controller.subdivision_delete_post
+);
 
 //Update
-router.get("/subdivision/:id/update", subdivision_controller.subdivision_update_get);
-router.post("/subdivision/:id/update", subdivision_controller.subdivision_update_post);
+router.get(
+  "/subdivision/:id/update",
+  subdivision_controller.subdivision_update_get
+);
+router.post(
+  "/subdivision/:id/update",
+  subdivision_controller.subdivision_update_post
+);
 
 module.exports = router;

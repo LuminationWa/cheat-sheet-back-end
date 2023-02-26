@@ -24,19 +24,34 @@ exports.subdivision_detail = function (req, res, next) {
 };
 
 //Create
-exports.subdivision_create_post = function (req, res, next) {
-  //Needs to be sanitized
-  const subdivison = new Subdivision({
-    name: req.body.name,
-    description: req.body.description,
-  });
-  subdivison.save((err) => {
-    if (err) {
-      return next(err);
+exports.subdivision_create_post = [
+  //Sanitizes name and description field, then creates a new Subdivision and if there's no errors saves it and redirects user
+  body("name", "Subdivision name required")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("description", "Description must be a string")
+    .optional({ checkFalsy: true })
+    .isString()
+    .escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const subdivision = new Subdivision({
+      name: req.body.name,
+      description: req.body.description,
+    });
+    if (!errors.isEmpty()) {
+      res.json(errors);
+    } else {
+      subdivision.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect(subdivision.url);
+      });
     }
-    res.redirect(subdivison.url);
-  });
-};
+  },
+];
 
 //Delete
 exports.subdivision_delete_get = function (req, res, next) {
@@ -59,7 +74,6 @@ exports.subdivision_delete_post = function (req, res, next) {
 };
 
 //Update
-//Should check if a subdivision with the same name already exists
 exports.subdivision_update_get = function (req, res, next) {
   Subdivision.findById(req.params.id, function (err, subdivision_details) {
     if (err) {
@@ -69,18 +83,40 @@ exports.subdivision_update_get = function (req, res, next) {
     res.json(subdivision_details);
   });
 };
-exports.subdivision_update_post = function (req, res, next) {
-  //Needs to be sanitized
-  const subdivision = new Subdivision({
-    name: req.body.name,
-    description: req.body.description,
-    _id: req.params.id,
-  });
-  Subdivision.findByIdAndUpdate(req.params.id, subdivision, {}, (err, thesubdivision) => {
-    if (err) {
-      return next(err);
+exports.subdivision_update_post = [
+  // Validate and sanitize input fields
+  body("name", "Subdivision name required")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  (req, res, next) => {
+    // Extract the validation errors from the request
+    const errors = validationResult(req);
+
+    // Create a new Subdivision object with the sanitized data and ID
+    const subdivision = new Subdivision({
+      name: req.body.name,
+      description: req.body.description,
+      _id: req.params.id,
+    });
+
+    // If there are errors, re-render the form with the sanitized data and error messages
+    if (!errors.isEmpty()) {
+      res.json(errors);
     }
-    //Successful, so redirect
-    res.redirect(subdivision.url);
-  });
-};
+
+    // If there are no errors, update the Subdivision object in the database and redirect to its detail page
+    Subdivision.findByIdAndUpdate(
+      req.params.id,
+      subdivision,
+      {},
+      (err, thesubdivision) => {
+        if (err) {
+          return next(err);
+        }
+        //Successful, so redirect
+        res.redirect(thesubdivision.url);
+      }
+    );
+  },
+];

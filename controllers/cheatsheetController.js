@@ -22,8 +22,8 @@ exports.cheatsheet_detail = function (req, res, next) {
       return next(err);
     }
     res.json(results);
-  })
-}
+  });
+};
 
 //Create
 
@@ -38,20 +38,30 @@ exports.cheatsheet_create_get = function (req, res, next) {
   });
 };
 
-exports.cheatsheet_create_post = function (req, res, next) {
-  //Needs to be sanitized
-  const cheatsheet = new Cheatsheet({
-    name: req.body.name,
-    description: req.body.description,
-    tags: req.body.tags,
-  });
-  cheatsheet.save((err) => {
-    if (err) {
-      return next(err);
+exports.cheatsheet_create_post = [
+  //Sanitizes fields and if there's no errors creates a new cheatsheet, saves it and redirects user to its url
+  body("name", "Name must not be empty").trim().isLength({ min: 1 }).escape(),
+  body("description").optional().trim().escape(),
+  body("tags").optional().isArray(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const cheatsheet = new Cheatsheet({
+      name: req.body.name,
+      description: req.body.description,
+      tags: req.body.tags,
+    });
+    if (!errors.isEmpty()) {
+      res.json(errors);
+    } else {
+      cheatsheet.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect(cheatsheet.url);
+      });
     }
-    res.redirect(cheatsheet.url);
-  });
-};
+  },
+];
 
 //Delete
 
@@ -87,24 +97,49 @@ exports.cheatsheet_update_get = function (req, res, next) {
   });
 };
 
-exports.cheatsheet_update_post = function (req, res, next) {
-  //Needs to be sanitized
-  const cheatsheet = new Cheatsheet({
-    name: req.body.name,
-    description: req.body.description,
-    tags: req.body.tags,
-    _id: req.params.id,
-  });
-  Cheatsheet.findByIdAndUpdate(
-    req.params.id,
-    cheatsheet,
-    {},
-    (err, thecheatsheet) => {
-      if (err) {
-        return next(err);
-      }
-      //Successful, so redirect
-      res.redirect(cheatsheet.url);
+exports.cheatsheet_update_post = [
+  // Validate and sanitize fields.
+  body("name", "Name must not be empty.").trim().isLength({ min: 1 }).escape(),
+  body("description", "Description must be alphanumeric.")
+    .optional()
+    .isAlphanumeric()
+    .escape(),
+  body("tags", "Tags must be alphanumeric.")
+    .optional()
+    .isAlphanumeric()
+    .escape(),
+  sanitizeBody("name").escape(),
+  sanitizeBody("description").escape(),
+  sanitizeBody("tags").escape(),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    // Create a new cheatsheet object with escaped and trimmed data.
+    const cheatsheet = new Cheatsheet({
+      name: req.body.name,
+      description: req.body.description,
+      tags: req.body.tags,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
+      res.json(errors);
+    } else {
+      // Data from form is valid. Update the record.
+      Cheatsheet.findByIdAndUpdate(
+        req.params.id,
+        cheatsheet,
+        {},
+        (err, thecheatsheet) => {
+          if (err) {
+            return next(err);
+          }
+          //Successful, so redirect to updated cheatsheet detail page
+          res.redirect(thecheatsheet.url);
+        }
+      );
     }
-  );
-};
+  },
+];

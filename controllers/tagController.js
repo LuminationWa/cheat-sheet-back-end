@@ -106,7 +106,7 @@ exports.tag_update_post = [
           return next(err);
         }
         //Successful, so redirect
-        res.redirect(tag.url);
+        res.redirect(thetag.url);
       });
     }
   },

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const CheatsheetSchema = new Schema(
   {
     name: { type: String, required: true, maxLength: 100 },
-    description: { type: String, required: true },
+    description: { type: String},
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
