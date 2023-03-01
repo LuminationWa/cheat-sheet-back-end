@@ -4,6 +4,7 @@ const cheatsheet_controller = require("../controllers/cheatsheetController");
 const subdivision_controller = require("../controllers/subdivisionController");
 const tag_controller = require("../controllers/tagController");
 const auth_controller = require("../controllers/authController");
+const bcrypt = require("bcryptjs");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {

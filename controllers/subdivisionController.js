@@ -1,4 +1,5 @@
 const Subdivision = require("../models/subdivision");
+const { body, validationResult } = require("express-validator");
 
 //Info
 exports.subdivision_list = function (req, res, next) {

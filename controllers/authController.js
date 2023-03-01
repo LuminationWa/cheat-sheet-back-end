@@ -1,19 +1,19 @@
-const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator');
-const passport = require('passport');
-const initializePassport = require('../passport-strategy');
-const User = require('../models/user');
+const bcrypt = require("bcryptjs");
+const { check, validationResult } = require("express-validator");
+const passport = require("passport");
+const initializePassport = require("../passport-strategy.js");
+const User = require("../models/user");
 
 // Initialize Passport with the local strategy
 initializePassport(passport);
 
 exports.signup_post = [
-  check('password')
+  check("password")
     .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters'),
-  check('confirm-password').custom((value, { req }) => {
+    .withMessage("Password must be at least 6 characters"),
+  check("confirm-password").custom((value, { req }) => {
     if (value !== req.body.password) {
-      throw new Error('Password confirmation does not match password');
+      throw new Error("Password confirmation does not match password");
     }
     return true;
   }),
@@ -33,15 +33,15 @@ exports.signup_post = [
         if (err) {
           return next(err);
         }
-        res.redirect('/');
+        res.redirect("/");
       });
     });
   },
 ];
 
-exports.login_post = passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
+exports.login_post = passport.authenticate("local", {
+  successRedirect: "/",
+  failureRedirect: "/login",
 });
 
 exports.logout_get = function (req, res, next) {
@@ -49,6 +49,6 @@ exports.logout_get = function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.redirect('/');
+    res.redirect("/");
   });
 };

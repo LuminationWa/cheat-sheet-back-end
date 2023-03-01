@@ -108,9 +108,6 @@ exports.cheatsheet_update_post = [
     .optional()
     .isAlphanumeric()
     .escape(),
-  sanitizeBody("name").escape(),
-  sanitizeBody("description").escape(),
-  sanitizeBody("tags").escape(),
 
   (req, res, next) => {
     const errors = validationResult(req);
