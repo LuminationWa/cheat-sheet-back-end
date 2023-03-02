@@ -18,30 +18,42 @@ exports.signup_post = [
     return true;
   }),
   (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-      if (err) {
-        return next(err);
-      }
-      const user = new User({
-        username: req.body.username,
-        password: hashedPassword,
-      }).save((err) => {
-        if (err) {
-          return next(err);
+    //To do: SHould probably check case sensitivity
+    //Checks there isn't an existing user with the same name
+    User.findOne({ username: req.body.username })
+      .then((user) => {
+        if (user) {
+          res.json("User already exists");
+        } else {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+          }
+          bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+            if (err) {
+              return next(err);
+            }
+            const user = new User({
+              username: req.body.username,
+              password: hashedPassword,
+            }).save((err) => {
+              if (err) {
+                return next(err);
+              }
+              res.redirect("/");
+            });
+          });
         }
-        res.redirect("/");
+      })
+      .catch((err) => {
+        return next(err);
       });
-    });
   },
 ];
 
 exports.login_post = passport.authenticate("local", {
   successRedirect: "/",
-  failureRedirect: "/login",
+  failureRedirect: "/log-in"
 });
 
 exports.logout_get = function (req, res, next) {

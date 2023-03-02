@@ -1,8 +1,10 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/user");
+const bcrypt = require("bcryptjs");
 
 function initializePassport(passport) {
+  //Configure LocalStrategy
   passport.use(
     new LocalStrategy(
       {
@@ -17,19 +19,30 @@ function initializePassport(passport) {
           if (!user) {
             return done(null, false, { message: "Incorrect username." });
           }
-          user.checkPassword(password, function (err, isMatch) {
-            if (err) {
-              return done(err);
+          bcrypt.compare(password, user.password, (err, res) => {
+            if (res) {
+              // passwords match! log user in
+              return done(null, user);
+            } else {
+              // passwords do not match!
+              return done(null, false, { message: "Incorrect password" });
             }
-            if (!isMatch) {
-              return done(null, false, { message: "Incorrect password." });
-            }
-            return done(null, user);
           });
         });
       }
     )
   );
+  // Serialize user
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
+
+  // Deserialize user
+  passport.deserializeUser((id, done) => {
+    User.findById(id, (err, user) => {
+      done(err, user);
+    });
+  });
 }
 
 initializePassport(passport);

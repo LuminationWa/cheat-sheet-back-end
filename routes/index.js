@@ -1,10 +1,25 @@
 var express = require("express");
+var session = require("express-session");
+const passport = require("passport");
 var router = express.Router();
 const cheatsheet_controller = require("../controllers/cheatsheetController");
 const subdivision_controller = require("../controllers/subdivisionController");
 const tag_controller = require("../controllers/tagController");
 const auth_controller = require("../controllers/authController");
 const bcrypt = require("bcryptjs");
+
+//Session setup
+router.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+router.use(passport.initialize());
+router.use(passport.session());
+router.use(express.urlencoded({ extended: false }));
+router.use(
+  session({
+    secret: "some-secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -17,7 +32,7 @@ router.get("/", function (req, res, next) {
 router.post("/sign-up", auth_controller.signup_post);
 
 //Log in
-router.post("/login", auth_controller.login_post);
+router.post("/log-in", auth_controller.login_post);
 
 //Log out
 router.get("/log-out", auth_controller.logout_get);
