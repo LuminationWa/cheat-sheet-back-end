@@ -8,19 +8,6 @@ const tag_controller = require("../controllers/tagController");
 const auth_controller = require("../controllers/authController");
 const bcrypt = require("bcryptjs");
 
-//Session setup
-router.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
-router.use(passport.initialize());
-router.use(passport.session());
-router.use(express.urlencoded({ extended: false }));
-router.use(
-  session({
-    secret: "some-secret-key",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });

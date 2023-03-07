@@ -3,6 +3,7 @@ const { check, validationResult } = require("express-validator");
 const passport = require("passport");
 const initializePassport = require("../passport-strategy.js");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 // Initialize Passport with the local strategy
 initializePassport(passport);
@@ -51,10 +52,31 @@ exports.signup_post = [
   },
 ];
 
-exports.login_post = passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/log-in"
-});
+exports.login_post = (req, res, next) => {
+  //Checks for errors, generates a token and returns the payload + the token to the client
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err || !user) {
+      // If there is an error or user is not authenticated
+      return res.status(400).json({
+        message: "Something is not right",
+        user: user,
+      });
+    }
+    // If user is authenticated, login and generate a token
+    req.login(user, { session: false }, (err) => {
+      if (err) {
+        return res.send(err);
+      }
+      // Generate a signed JWT token and send it to the client
+      const payload = {
+        username: user.username,
+        _id: user._id
+      }
+      const token = jwt.sign(payload, "jwt_secret");
+      return res.json({ payload, token });
+    });
+  })(req, res, next);
+};
 
 exports.logout_get = function (req, res, next) {
   req.logout(function (err) {

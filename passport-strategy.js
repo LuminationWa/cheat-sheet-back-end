@@ -32,17 +32,6 @@ function initializePassport(passport) {
       }
     )
   );
-  // Serialize user
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  // Deserialize user
-  passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      done(err, user);
-    });
-  });
 }
 
 initializePassport(passport);
