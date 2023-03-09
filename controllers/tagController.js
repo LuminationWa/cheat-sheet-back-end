@@ -4,7 +4,8 @@ const { body, validationResult } = require("express-validator");
 //Info
 exports.tag_list = function (req, res, next) {
   //Returns all tags sorted by name
-  Tag.find()
+  const userId = req.query.user;
+  Tag.find({ user: userId })
     .sort([["name", "ascending"]])
     .exec(function (err, list_tags) {
       if (err) {

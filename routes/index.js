@@ -31,7 +31,7 @@ router.get("/cheatsheets", cheatsheet_controller.cheatsheet_list);
 router.get("/cheatsheet/:id", cheatsheet_controller.cheatsheet_detail);
 
 // Create
-router.post("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_get);
+router.get("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_get);
 router.post("/cheatsheet/create", cheatsheet_controller.cheatsheet_create_post);
 
 //Delete

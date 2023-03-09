@@ -7,6 +7,7 @@ const CheatsheetSchema = new Schema(
     name: { type: String, required: true, maxLength: 100 },
     description: { type: String},
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true},
   },
   {
     collection: "Cheat-sheets",

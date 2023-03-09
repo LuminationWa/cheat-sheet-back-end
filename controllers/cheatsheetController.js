@@ -1,5 +1,6 @@
 const Cheatsheet = require("../models/cheatsheet");
 const Tag = require("../models/tag");
+const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 
 //Information
@@ -29,7 +30,7 @@ exports.cheatsheet_detail = function (req, res, next) {
 
 exports.cheatsheet_create_get = function (req, res, next) {
   //Returns all tags so they can be choosed from
-  Tag.find().exec(function (err, list_tags) {
+  Tag.find().exec(function (err, list_cheatsheets) {
     if (err) {
       return next(err);
     }
@@ -43,22 +44,28 @@ exports.cheatsheet_create_post = [
   body("name", "Name must not be empty").trim().isLength({ min: 1 }).escape(),
   body("description").optional().trim().escape(),
   body("tags").optional().isArray(),
-  (req, res, next) => {
+  body("user").notEmpty().withMessage("User must not be empty"),
+  async (req, res, next) => {
     const errors = validationResult(req);
-    const cheatsheet = new Cheatsheet({
-      name: req.body.name,
-      description: req.body.description,
-      tags: req.body.tags,
-    });
     if (!errors.isEmpty()) {
       res.json(errors);
     } else {
-      cheatsheet.save((err) => {
-        if (err) {
-          return next(err);
+      try {
+        const user = await User.findOne({ _id: req.body.user });
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
         }
+        const cheatsheet = new Cheatsheet({
+          name: req.body.name,
+          description: req.body.description,
+          tags: req.body.tags,
+          user: user._id,
+        });
+        await cheatsheet.save();
         res.redirect(cheatsheet.url);
-      });
+      } catch (err) {
+        return next(err);
+      }
     }
   },
 ];
