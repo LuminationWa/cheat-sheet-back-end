@@ -6,6 +6,7 @@ const TagSchema = new Schema(
   {
     name: { type: String, required: true, maxLength: 100 },
     description: { type: String },
+    user: { type: Schema.Types.ObjectId, ref: "User" },
   },
   {
     collection: "Tags",

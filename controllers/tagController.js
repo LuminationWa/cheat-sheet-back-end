@@ -6,7 +6,7 @@ exports.tag_list = function (req, res, next) {
   //Returns all tags sorted by name
   Tag.find()
     .sort([["name", "ascending"]])
-    .exec(function (err, tags) {
+    .exec(function (err, list_tags) {
       if (err) {
         return next(err);
       }
