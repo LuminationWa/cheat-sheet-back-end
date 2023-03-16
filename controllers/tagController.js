@@ -6,14 +6,12 @@ const mongoose = require("mongoose");
 exports.tag_list = function (req, res, next) {
   //Returns all tags sorted by name
   const userId = mongoose.Types.ObjectId(req.query.user); // convert to ObjectId
-  console.log('User ID:', userId);
   Tag.find({ user: userId })
     .sort([["name", "ascending"]])
     .exec(function (err, list_tags) {
       if (err) {
         return next(err);
       }
-      console.log('Tags:', list_tags, userId, typeof userId);
       //Successful, so send response as JSON
       res.json(list_tags);
     });

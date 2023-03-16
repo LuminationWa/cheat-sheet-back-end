@@ -2,11 +2,13 @@ const Cheatsheet = require("../models/cheatsheet");
 const Tag = require("../models/tag");
 const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
 //Information
 exports.cheatsheet_list = function (req, res, next) {
   //Returns all cheatshets sorted by name
-  Cheatsheet.find()
+  const userId = mongoose.Types.ObjectId(req.query.user); // convert to ObjectId
+  Cheatsheet.find({ user: userId })
     .sort([["name", "ascending"]])
     .exec(function (err, list_cheatsheets) {
       if (err) {
