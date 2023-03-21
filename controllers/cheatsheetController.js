@@ -60,11 +60,11 @@ exports.cheatsheet_create_post = [
         const cheatsheet = new Cheatsheet({
           name: req.body.name,
           description: req.body.description,
-          tags: req.body.tags,
+          tag: req.body.tag,
           user: user._id,
         });
         await cheatsheet.save();
-        res.redirect(cheatsheet.url);
+        res.redirect("/");
       } catch (err) {
         return next(err);
       }

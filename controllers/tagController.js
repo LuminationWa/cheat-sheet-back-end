@@ -18,7 +18,8 @@ exports.tag_list = function (req, res, next) {
 };
 
 exports.tag_detail = function (req, res, next) {
-  Tag.findById(req.params.id, (err, results) => {
+  const tagId = mongoose.Types.ObjectId(req.params.id); // convert to ObjectId
+  Tag.findById(tagId, (err, results) => {
     if (err) {
       return next(err);
     }
