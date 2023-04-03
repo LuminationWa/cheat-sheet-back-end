@@ -35,7 +35,7 @@ exports.tag_create_post = [
     const errors = validationResult(req);
     const tag = new Tag({
       name: req.body.name,
-      description: req.body.description,
+      user: req.body.user,
     });
     if (!errors.isEmpty()) {
       res.json(results);
@@ -52,7 +52,7 @@ exports.tag_create_post = [
             if (err) {
               return next(err);
             }
-            res.redirect(tag.url);
+            res.redirect("/");
           });
         }
       });

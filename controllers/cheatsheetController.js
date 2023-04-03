@@ -48,6 +48,7 @@ exports.cheatsheet_create_post = [
   body("tags").optional().isArray(),
   body("user").notEmpty().withMessage("User must not be empty"),
   async (req, res, next) => {
+    console.log(req);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.json(errors);

@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const TagSchema = new Schema(
   {
     name: { type: String, required: true, maxLength: 100 },
-    description: { type: String },
-    user: { type: Schema.Types.ObjectId, ref: "User" },
+    user: { type: Schema.Types.ObjectId, required: true, ref: "User"},
   },
   {
     collection: "Tags",
