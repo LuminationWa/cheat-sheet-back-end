@@ -48,7 +48,6 @@ exports.cheatsheet_create_post = [
   body("tags").optional().isArray(),
   body("user").notEmpty().withMessage("User must not be empty"),
   async (req, res, next) => {
-    console.log(req);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.json(errors);
@@ -110,14 +109,6 @@ exports.cheatsheet_update_get = function (req, res, next) {
 exports.cheatsheet_update_post = [
   // Validate and sanitize fields.
   body("name", "Name must not be empty.").trim().isLength({ min: 1 }).escape(),
-  body("description", "Description must be alphanumeric.")
-    .optional()
-    .isAlphanumeric()
-    .escape(),
-  body("tags", "Tags must be alphanumeric.")
-    .optional()
-    .isAlphanumeric()
-    .escape(),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -126,7 +117,7 @@ exports.cheatsheet_update_post = [
     const cheatsheet = new Cheatsheet({
       name: req.body.name,
       description: req.body.description,
-      tags: req.body.tags,
+      tag: req.body.tag,
       _id: req.params.id,
     });
 
@@ -144,7 +135,7 @@ exports.cheatsheet_update_post = [
             return next(err);
           }
           //Successful, so redirect to updated cheatsheet detail page
-          res.redirect(thecheatsheet.url);
+          res.redirect("/");
         }
       );
     }
